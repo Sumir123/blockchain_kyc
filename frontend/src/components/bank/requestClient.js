@@ -94,10 +94,8 @@ const RequestClient = () => {
           textAlign: "center",
         }}
       >
-        <Typography variant="h5" gutterBottom></Typography>
-
         {KycRequestedClients.map((client) => (
-          <Card variant="outlined" sx={{ mt: 3 }}>
+          <Card variant="outlined">
             {!allBankClients.includes(client) && (
               <CardContent>
                 <Typography variant="h6">Address : {client}</Typography>

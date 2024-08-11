@@ -5,7 +5,7 @@ pragma solidity 0.8.19;
 contract DecentralizedKYC1 {
     //admin for bank verification
     address public admin;
-
+    bytes32 public root;
     //status of user's kyc
     enum KYC_STATUS {
         NOT_UPLOADED,
@@ -18,12 +18,13 @@ contract DecentralizedKYC1 {
     //user's details along with n and d of RSA
     struct Kyc {
         string jsonHash;
-        string passportHash;
-        string citizenshipFrontHash;
-        string citizenshipBackHash;
+        string photoHash;
+        string frontHash;
+        string backHash;
         uint256 privateKey;
         uint256 publicKey;
         uint256 encryptKey;
+        bytes32 sha256Hash;
         address verifiedBy;
     }
 
@@ -253,13 +254,15 @@ contract DecentralizedKYC1 {
         string memory _backHash,
         uint256 _privateKey,
         uint256 _publicKey,
-        uint256 _encryptKey
+        uint256 _encryptKey,
+        bytes32 _sha256Hash
     ) public onlyRegisteredUser {
         require(
             (users[msg.sender].kycStatus == KYC_STATUS.NOT_UPLOADED) ||
                 (users[msg.sender].kycStatus == KYC_STATUS.REJECTED),
             "KYC already uploaded"
         );
+
         Kyc memory newKyc = Kyc(
             _jsonHash,
             _photoHash,
@@ -268,9 +271,14 @@ contract DecentralizedKYC1 {
             _privateKey,
             _publicKey,
             _encryptKey,
+            _sha256Hash,
             address(0)
         );
+
+        // Store the KYC object in the mapping
         kyc[msg.sender] = newKyc;
+
+        // Update the user's KYC status
         users[msg.sender].kycStatus = KYC_STATUS.UPLOADED;
     }
 

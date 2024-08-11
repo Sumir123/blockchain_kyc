@@ -39,3 +39,8 @@ module.exports = {
 // Deploying contracts with account:  0x72D305Be710732e8731Fa98aa5b264894Bc728B0
 // Account balance:  100000000000000000000
 // DecentralizedKYC address:  0x2A022a8Daa52Af1cd5c763eD2A6EFD536Cbefc3B
+
+
+// npx hardhat clean
+// npx hardhat node
+// npm run deploy ganache

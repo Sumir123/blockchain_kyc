@@ -100,13 +100,26 @@ const AdminDashboard = () => {
                 </Typography>
               </Card>
             </Box>
-
-            <Grid mt={1} container spacing={4}>
+            {unverifiedBank.length ? (
+              <Typography variant="h5" ml={2}>
+                Unverified Banks
+              </Typography>
+            ) : (
+              ""
+            )}
+            <Grid container spacing={4}>
               {unverifiedBank.map((bank) => {
                 return <BankList bank={bank} isVerified={false} />;
               })}
             </Grid>
-            <Grid mt={1} container spacing={4}>
+            {verifiedBank.length ? (
+              <Typography variant="h5" ml={2}>
+                Verified Banks
+              </Typography>
+            ) : (
+              ""
+            )}
+            <Grid container spacing={4}>
               {verifiedBank.map((bank) => {
                 return <BankList bank={bank} isVerified={true} />;
               })}

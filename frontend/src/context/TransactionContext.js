@@ -9,7 +9,8 @@ import {
   contractAddress,
   THIRD_WORLD_CLIENT_ID,
 } from "../utils/constants";
-import { getCryptographyKeys, decryptMessage, generateMerkleRoot } from "../utils/cryptography";
+import { getCryptographyKeys, decryptMessage } from "../utils/cryptography";
+import { computeMerkleRoot } from "../utils/merkleTree";
 
 async function retrieveFiles(cid) {
   const client = makeStorageClient();
@@ -31,6 +32,7 @@ async function retrieveFiles(cid) {
   }
   return files[0];
 }
+
 export const TransactionContext = React.createContext();
 
 const { ethereum } = window;
@@ -59,7 +61,7 @@ export const TransactionsProvider = ({ children }) => {
   const [requestedClients, setRequestedClients] = useState([]);
   const [KycRequestedClients, setKycRequestedClients] = useState([]);
   const [KycRequestedBanks, setKycRequestedBanks] = useState([]);
-  const [KycAccessGrantedClients, setKycAccessGrantedClients] = useState([]);
+  // const [KycAccessGrantedClients, setKycAccessGrantedClients] = useState([]);
   const [kycDetail, setKycDetail] = useState({});
   const [passportPhoto, setPassportPhoto] = useState("");
   const [citizenshipFrontPhoto, setCitizenshipFrontPhoto] = useState("");
@@ -80,11 +82,11 @@ export const TransactionsProvider = ({ children }) => {
         const registerTxn = await kycContract.registerUser(name, email, phone, {
           gasLimit: 300000,
         });
-        console.log("Mining...", registerTxn.hash);
-        toast.info("Mining... ", registerTxn.hash);
+
+        // toast.info("Mining... ", registerTxn.hash);
         await registerTxn.wait();
         console.log("Mined --", registerTxn.hash);
-        toast.info("Mined -- ", registerTxn.hash);
+        // toast.info("Mined -- ", registerTxn.hash);
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -93,7 +95,7 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      window.alert("Registration Unsuccessful");
+
       toast.info("Registration Unsuccessful");
     }
   };
@@ -106,11 +108,11 @@ export const TransactionsProvider = ({ children }) => {
         const registerTxn = await kycContract.registerBank(name, license, {
           gasLimit: 300000,
         });
-        console.log("Mining...", registerTxn.hash);
-        toast.info("Mining... ", registerTxn.hash);
+
+        // toast.info("Mining... ", registerTxn.hash);
         await registerTxn.wait();
         console.log("Mined --", registerTxn.hash);
-        toast.info("Mined -- ", registerTxn.hash);
+        // toast.info("Mined -- ", registerTxn.hash);
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -119,7 +121,7 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      // window.alert("Registration Unsuccessful");
+
       toast.info("Registration Unsuccessful");
     }
   };
@@ -184,7 +186,6 @@ export const TransactionsProvider = ({ children }) => {
       if (ethereum) {
         const kycContract = createEthereumContract();
         const banks = await kycContract.getReceivedRequests();
-        // console.log(banks)
 
         const promises = banks.map(async (bank) => {
           const bankClients = await kycContract.getBankClientsAddrSupp(bank);
@@ -196,28 +197,19 @@ export const TransactionsProvider = ({ children }) => {
           return detail;
         });
         const bankWithClients = await Promise.all(promises);
-        // console.log('bk with cl',bankWithClients);
+
         const user = await kycContract.getMessageSender();
-        // console.log('curr user',user)
+
         const filteredBankList = [];
 
         bankWithClients.map((bank) => {
-          // console.log('Check')
           const check = bank.clients.includes(user);
-          // console.log('Check result',check);
+
           if (!check) {
             filteredBankList.push(bank.address);
           }
-          // bank.clients.map((client)=>{
-          //   console.log('this is client',client.toCase());
-          //   // if(client=currentAccount)
-          //   // {
-          //   //   filteredBankList.push(bank.address)
-
-          //   // }
-          // })
         });
-        // console.log('filtered',filteredBankList);
+
         return filteredBankList;
       } else {
         console.log("Ethereum is not present");
@@ -232,7 +224,7 @@ export const TransactionsProvider = ({ children }) => {
       if (ethereum) {
         const kycContract = createEthereumContract();
         const filteredBanks = await bankFilter();
-        // console.log(filteredBanks);
+
         const promises = filteredBanks.map(async (bank) => {
           const bankDetail = await kycContract.getBankDetails(bank);
           const detail = {
@@ -253,33 +245,6 @@ export const TransactionsProvider = ({ children }) => {
       console.log(error);
     }
   };
-
-  // const getKycAccessRequestsForClient = async () => {
-  //   try {
-  //     if (ethereum) {
-  //       const kycContract = createEthereumContract();
-  //       const banks= await kycContract.getReceivedRequests();
-  //       const allBankClients=await kycContract.getBankClientsAddrSupp();
-  //       const promises = banks.map(async (bank) => {
-  //         const bankDetail = await kycContract.getBankDetails(bank);
-  //         const detail = {
-  //           address: bank,
-  //           name: bankDetail.name,
-  //           license: bankDetail.license,
-  //           isVerified: bankDetail.isVerified,
-  //         };
-  //         return detail;
-  //       });
-  //       const allBanks = await Promise.all(promises);
-
-  //       setKycRequestedBanks(allBanks);
-  //     } else {
-  //       console.log("Ethereum is not present");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const getAllBankClients = async () => {
     try {
@@ -354,7 +319,7 @@ export const TransactionsProvider = ({ children }) => {
   //   try {
   //     if (ethereum) {
   //       const kycContract = createEthereumContract();
-  //       //hard cooded bank address for testing
+  //
   //       const userAccess = await kycContract.addBankAccess(
   //         "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
   //         {
@@ -401,8 +366,6 @@ export const TransactionsProvider = ({ children }) => {
             user.kycStatus != "UPLOADED"
         );
         setRequestedClients(requestedAndNotVerified);
-
-        // setBankClients([...bankClients, bankUsers]);
       } else {
         console.log("Ethereum is not present");
       }
@@ -433,8 +396,6 @@ export const TransactionsProvider = ({ children }) => {
 
         console.log("TRANS CONTEXT", allBankUsers);
         setAllBankClientDetails(allBankUsers);
-
-        // setBankClients([...bankClients, bankUsers]);
       } else {
         console.log("Ethereum is not present");
       }
@@ -464,7 +425,6 @@ export const TransactionsProvider = ({ children }) => {
         setUserAllBanks(userAllbanks);
       } else {
         console.log("Ethereum is not present");
-        toast.info("Ethereum is not present");
       }
     } catch (error) {
       console.log(error);
@@ -479,10 +439,10 @@ export const TransactionsProvider = ({ children }) => {
           gasLimit: 300000,
         });
         console.log("Mining ...", verifyTxn.hash);
-        toast.info("Mining... ", verifyTxn.hash);
+
         await verifyTxn.wait();
         console.log("Mined --", verifyTxn.hash);
-        toast.info("Mined -- ", verifyTxn.hash);
+
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -491,7 +451,7 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      // window.alert("Unable TO verify KYC");
+
       toast.info("Unable to verify KYC");
     }
   };
@@ -504,10 +464,10 @@ export const TransactionsProvider = ({ children }) => {
           gasLimit: 300000,
         });
         console.log("Mining ...", verifyTxn.hash);
-        toast.info("Mining... ", verifyTxn.hash);
+
         await verifyTxn.wait();
         console.log("Mined --", verifyTxn.hash);
-        toast.info("Mined -- ", verifyTxn.hash);
+
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -516,7 +476,7 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      // window.alert("Unable to reject KYC");
+
       toast.info("Unable to reject KYC");
     }
   };
@@ -528,11 +488,10 @@ export const TransactionsProvider = ({ children }) => {
         const verifyTxn = await kycContract.verifyBank(bank, {
           gasLimit: 300000,
         });
-        console.log("Mining...", verifyTxn.hash);
-        toast.info("Mining... ", verifyTxn.hash);
+
         await verifyTxn.wait();
         console.log("Mined --", verifyTxn.hash);
-        toast.info("Mined -- ", verifyTxn.hash);
+
         setTimeout(() => {
           setTimeout(() => {
             window.location.reload();
@@ -543,7 +502,7 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      // window.alert("Verification Unsuccessful");
+
       toast.info("Request Unsuccessful");
     }
   };
@@ -555,11 +514,10 @@ export const TransactionsProvider = ({ children }) => {
         const requestTxn = await kycContract.requestVerification(bank, {
           gasLimit: 300000,
         });
-        console.log("Mining...", requestTxn.hash);
-        toast.info("Mining... ", requestTxn.hash);
+
         await requestTxn.wait();
         console.log("Mined --", requestTxn.hash);
-        toast.info("Mined -- ", requestTxn.hash);
+
         setTimeout(() => {
           window.location.reload();
         }, 2000);
@@ -569,7 +527,7 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      // window.alert("Request Unsuccessful");
+
       toast.info("Request Unsuccessful");
     }
   };
@@ -581,11 +539,9 @@ export const TransactionsProvider = ({ children }) => {
         const requestTxn = await kycContract.requestAccess(client, {
           gasLimit: 300000,
         });
-        console.log("Mining...", requestTxn.hash);
-        toast.info("Mining... ", requestTxn.hash);
+
         await requestTxn.wait();
         console.log("Mined --", requestTxn.hash);
-        toast.info("Mined -- ", requestTxn.hash);
 
         setTimeout(() => {
           window.location.reload();
@@ -596,7 +552,7 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      // window.alert("Request Unsuccessful");
+
       toast.info("Request Unsuccessful");
     }
   };
@@ -624,8 +580,6 @@ export const TransactionsProvider = ({ children }) => {
           verifier = bankDetail.name;
         }
 
-        // const jsKycDetailPath = await retrieveFiles(jsonHash);
-        // https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/QmVJY61di9kU1oMQvQ9rHrsFzrbcF4nrFPj5YPCwL7jMed/form.json
         fetch(
           `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${jsonHash}/form.json`
         ).then(function (response) {
@@ -641,7 +595,7 @@ export const TransactionsProvider = ({ children }) => {
         });
 
         const passportHash = kycDetailFromContract.passportHash;
-        // const passportPhotoPath = await retrieveFiles(passportHash);
+
         fetch(
           `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${passportHash}/passportPhotoHash`
         ).then(function (response) {
@@ -659,9 +613,7 @@ export const TransactionsProvider = ({ children }) => {
         });
 
         const citizenshipFrontHash = kycDetailFromContract.citizenshipFrontHash;
-        // const citizenshipFrontPhotoPath = await retrieveFiles(
-        //   citizenshipFrontHash
-        // );
+
         fetch(
           `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${citizenshipFrontHash}/citizenshipFrontHash`
         ).then(function (response) {
@@ -679,9 +631,7 @@ export const TransactionsProvider = ({ children }) => {
         });
 
         const citizenshipBackHash = kycDetailFromContract.citizenshipBackHash;
-        // const citizenshipBackPhotoPath = await retrieveFiles(
-        //   citizenshipBackHash
-        // );
+
         fetch(
           `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${citizenshipBackHash}/citizenshipBackHash`
         ).then(function (response) {
@@ -731,7 +681,7 @@ export const TransactionsProvider = ({ children }) => {
         setUserKeys([parsedEncryptKey, parsedPrivateKey, parsedPublicKey]);
         const jsonHash = kycDetailFromContract.jsonHash;
         console.log("Hashes", kycDetailFromContract);
-        // const kycDetailPath = await retrieveFiles(jsonHash);
+
         fetch(
           `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${jsonHash}/form.json`
         ).then(function (response) {
@@ -748,13 +698,11 @@ export const TransactionsProvider = ({ children }) => {
             });
           });
         });
+        console.log("kycDetailFromContract", kycDetailFromContract);
+        setPassportHash(kycDetailFromContract.photoHash);
 
-        setPassportHash(kycDetailFromContract.passportHash);
-        // const passportPhotoPath = await retrieveFiles(
-        //   kycDetailFromContract.passportHash
-        // );
         fetch(
-          `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${kycDetailFromContract.passportHash}/passportPhotoHash`
+          `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${kycDetailFromContract.photoHash}/passportPhotoHash`
         ).then(function (response) {
           return response.text().then(function (text) {
             const decryptedMessage = decryptMessage(
@@ -769,10 +717,10 @@ export const TransactionsProvider = ({ children }) => {
           });
         });
 
-        setCitizenshipFrontHash(kycDetailFromContract.citizenshipFrontHash);
+        setCitizenshipFrontHash(kycDetailFromContract.frontHash);
 
         fetch(
-          `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${kycDetailFromContract.citizenshipFrontHash}/citizenshipFrontHash`
+          `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${kycDetailFromContract.frontHash}/citizenshipFrontHash`
         ).then(function (response) {
           return response.text().then(function (text) {
             const decryptedMessage = decryptMessage(
@@ -787,10 +735,10 @@ export const TransactionsProvider = ({ children }) => {
           });
         });
 
-        setCitizenshipBackHash(kycDetailFromContract.citizenshipBackHash);
+        setCitizenshipBackHash(kycDetailFromContract.backHash);
 
         fetch(
-          `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${kycDetailFromContract.citizenshipBackHash}/citizenshipBackHash`
+          `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${kycDetailFromContract.backHash}/citizenshipBackHash`
         ).then(function (response) {
           return response.text().then(function (text) {
             const decryptedMessage = decryptMessage(
@@ -812,6 +760,11 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
+  const handleComputeMerkleRoot = async (data) => {
+    const merkleRoot = computeMerkleRoot(data);
+    return merkleRoot;
+  };
+
   const uploadKYC = async (
     _jsonHash,
     _photoHash,
@@ -824,16 +777,27 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (ethereum) {
         const kycContract = createEthereumContract();
-  
-        // Generate Merkle Root
-        const hashes = [
-          ethers.utils.keccak256(ethers.utils.toUtf8Bytes(_jsonHash)),
-          ethers.utils.keccak256(ethers.utils.toUtf8Bytes(_photoHash)),
-          ethers.utils.keccak256(ethers.utils.toUtf8Bytes(_frontHash)),
-          ethers.utils.keccak256(ethers.utils.toUtf8Bytes(_backHash)),
+
+        const dataForMerkle = [
+          _jsonHash,
+          _photoHash,
+          _frontHash,
+          _backHash,
+          _privateKey,
+          _publicKey,
+          _encryptKey,
         ];
-        const merkleRoot = generateMerkleRoot(hashes);
-  
+
+        const merkleRootHex = await handleComputeMerkleRoot(dataForMerkle);
+
+        // Ensure merkleRootHex is a 64-character hexadecimal string
+        if (!/^([0-9a-fA-F]{64})$/.test(merkleRootHex)) {
+          throw new Error("Invalid merkleRootHex format");
+        }
+
+        // Convert to bytes32 format
+        const merkleRoot = ethers.utils.hexZeroPad(`0x${merkleRootHex}`, 32);
+
         const uploadTxn = await kycContract.uploadKyc(
           _jsonHash,
           _photoHash,
@@ -842,24 +806,23 @@ export const TransactionsProvider = ({ children }) => {
           _privateKey,
           _publicKey,
           _encryptKey,
-          merkleRoot  // Pass the Merkle Root to the smart contract
+          merkleRoot
         );
-        console.log("Mining...", uploadTxn.hash);
+
         await uploadTxn.wait();
-        console.log("Mined --", uploadTxn.hash);
+
         setTimeout(() => {
           window.location.reload();
         }, 2000);
       } else {
-        console.log("No ethereum object");
-        toast.info("No ethereum object");
+        console.log("No Ethereum object found");
+        toast.info("No Ethereum object found");
       }
     } catch (error) {
-      console.log(error);
-      toast.info("Upload Unsuccessful");
+      console.error("Error uploading KYC:", error);
+      toast.error("Upload Unsuccessful");
     }
   };
-  
 
   const checkValidUser = async () => {
     try {
@@ -867,7 +830,7 @@ export const TransactionsProvider = ({ children }) => {
         const kycContract = createEthereumContract();
         const validUser = await kycContract.isUserValid();
         const logged = JSON.parse(localStorage.getItem("loggedIn")).entry;
-        //valid user and logged in state
+
         logged && setValidUser(validUser);
         console.log("User status:", validUser);
         toast.info(`User status: ${validUser ? "Online" : "Offline"}`);
@@ -925,7 +888,6 @@ export const TransactionsProvider = ({ children }) => {
         return;
       } else {
         console.log("We have the ethereum object", ethereum);
-        // toast.info("Wallet Connected", ethereum);
       }
 
       const accounts = await ethereum.request({ method: "eth_accounts" });
@@ -935,7 +897,6 @@ export const TransactionsProvider = ({ children }) => {
         console.log("Found an authorized account:", account);
         const logged = JSON.parse(localStorage.getItem("loggedIn")).entry;
         logged && setCurrentAccount(account);
-        // getAllWaves();
       } else {
         console.log("No authorized account found");
       }
@@ -949,13 +910,11 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (ethereum) {
         const kycContract = createEthereumContract();
-        //hard cooded bank address for testing
+
         const userAccess = await kycContract.grantAccess(bankAddress, {
           gasLimit: 300000,
         });
 
-        console.log("Mining...", userAccess.hash);
-        toast.info("Mining... ", userAccess.hash);
         await userAccess.wait();
         console.log("Mined --", userAccess.hash);
         toast.info("Mined... ", userAccess.hash);
@@ -1005,7 +964,7 @@ export const TransactionsProvider = ({ children }) => {
 
   const genKeys = () => {
     console.log("Keys Computing");
-    toast.info("Keys Computing");
+    // toast.info("Keys Computing");
     const keysGenerated = getCryptographyKeys();
     setKeys(keysGenerated);
   };

@@ -1,19 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import { Avatar, Grid, Paper, Typography } from "@mui/material";
+import { useContext, useEffect } from "react";
 import { TransactionContext } from "../../../context/TransactionContext";
-import BasicTable from "../components/BasicTable";
-import {
-  Typography,
-  Box,
-  CssBaseline,
-  Grid,
-  Avatar,
-  Paper,
-} from "@mui/material";
 import { ErrorMessage } from "../../errorMessage";
-import userLogo from "../../../utils/user.png";
+import Header from "../components/Header";
 
 const UserDashboard = () => {
   const {
@@ -21,13 +10,15 @@ const UserDashboard = () => {
     checkValidUser,
     getUserDashboard,
     userDashboard,
-    addBankAccess,
+    getKYC,
+    passportPhoto,
     currentAccount,
   } = useContext(TransactionContext);
 
   useEffect(() => {
     getUserDashboard();
     checkValidUser();
+    getKYC();
     //addBankAccess();
   }, []);
 
@@ -50,7 +41,7 @@ const UserDashboard = () => {
             <Grid container>
               <Grid item sx={{ my: "1rem", ml: "10px" }}>
                 <Avatar
-                  src={userLogo}
+                  src={passportPhoto}
                   alt="passportPhoto"
                   sx={{ width: 300, height: 300 }}
                 />

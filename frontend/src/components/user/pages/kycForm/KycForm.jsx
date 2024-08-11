@@ -145,9 +145,8 @@ export const KycForm = () => {
         const client = makeStorageClient();
         const cid = await client.upload(files);
         const mcid = cid.split("/")[2];
-        console.log("cid", cid, mcid);
+        // console.log("cid", cid, mcid);
 
-        // const hash = await ipfs.add(encryptedData);
         setImagesHash((prevState) => ({
           ...prevState,
           [name]: mcid,
@@ -159,7 +158,6 @@ export const KycForm = () => {
       };
       reader.readAsDataURL(event.target.files[0]);
       toast.info(`${name} is uploaded to IPFS server.`);
-      // let imageFile=new Blob([event.target.files[0]],{type:"image/png"});
     }
   };
 
@@ -170,21 +168,12 @@ export const KycForm = () => {
       keys[0],
       keys[2]
     );
-    //const json = JSON.stringify(data);
-    //console.log(json);
+
     const files = new File([encryptedJSON], "form.json");
     const client = makeStorageClient();
     const cid = await client.upload(files);
     const mcid = cid.split("/")[2];
     console.log("cid", cid, mcid);
-
-    // const jsonHash = await ipfs.add(encryptedJSON);
-    //console.log(jsonHash.path);
-    //console.log("sumbitData", data);
-    //console.log(imagesHash);
-
-    //const kycData = mainpulateData(data);
-    //console.log(kycData);
 
     uploadKYC(
       mcid,

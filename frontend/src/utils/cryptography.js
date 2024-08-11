@@ -1,27 +1,4 @@
-import { ethers } from "ethers";
 import getRandomPrimes from "./prime";
-
-export const encryptMessage = (msg, e, n) => {
-  let cipher = "";
-  for (const i in msg) {
-    const temp = msg[i].charCodeAt(0);
-    cipher += getModularExponentiation(temp, e, n) + " ";
-  }
-  //console.log(cipher);
-  return cipher;
-};
-
-export const decryptMessage = (cipher, d, n) => {
-  let decryptedMsg = "";
-  const parts = cipher.split(" ");
-  for (const i in parts) {
-    if (parts[i]) {
-      const temp = getModularExponentiation(parts[i], d, n);
-      decryptedMsg += String.fromCharCode(temp);
-    }
-  }
-  return decryptedMsg;
-};
 
 const gcd = (a, b) => {
   if (!b) {
@@ -83,21 +60,24 @@ export const getCryptographyKeys = () => {
   return [e, d, n];
 };
 
-export const generateMerkleRoot = (hashes) => {
-  const hashPair = (a, b) =>
-    ethers.utils.keccak256(
-      ethers.utils.defaultAbiCoder.encode(["bytes32", "bytes32"], [a, b])
-    );
-
-  while (hashes.length > 1) {
-    if (hashes.length % 2 !== 0) {
-      hashes.push(hashes[hashes.length - 1]);
-    }
-    let newLevel = [];
-    for (let i = 0; i < hashes.length; i += 2) {
-      newLevel.push(hashPair(hashes[i], hashes[i + 1]));
-    }
-    hashes = newLevel;
+export const encryptMessage = (msg, e, n) => {
+  let cipher = "";
+  for (const i in msg) {
+    const temp = msg[i].charCodeAt(0);
+    cipher += getModularExponentiation(temp, e, n) + " ";
   }
-  return hashes[0];
+  //console.log(cipher);
+  return cipher;
+};
+
+export const decryptMessage = (cipher, d, n) => {
+  let decryptedMsg = "";
+  const parts = cipher.split(" ");
+  for (const i in parts) {
+    if (parts[i]) {
+      const temp = getModularExponentiation(parts[i], d, n);
+      decryptedMsg += String.fromCharCode(temp);
+    }
+  }
+  return decryptedMsg;
 };
