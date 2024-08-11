@@ -584,7 +584,6 @@ export const TransactionsProvider = ({ children }) => {
           `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${jsonHash}/form.json`
         ).then(function (response) {
           return response.text().then(function (text) {
-            console.log(text);
             const decryptedMessage = JSON.parse(
               decryptMessage(text, parsedPrivateKey, parsedPublicKey)
             );
@@ -594,7 +593,7 @@ export const TransactionsProvider = ({ children }) => {
           });
         });
 
-        const passportHash = kycDetailFromContract.passportHash;
+        const passportHash = kycDetailFromContract.photoHash;
 
         fetch(
           `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${passportHash}/passportPhotoHash`
@@ -612,7 +611,7 @@ export const TransactionsProvider = ({ children }) => {
           });
         });
 
-        const citizenshipFrontHash = kycDetailFromContract.citizenshipFrontHash;
+        const citizenshipFrontHash = kycDetailFromContract.frontHash;
 
         fetch(
           `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${citizenshipFrontHash}/citizenshipFrontHash`
@@ -630,7 +629,7 @@ export const TransactionsProvider = ({ children }) => {
           });
         });
 
-        const citizenshipBackHash = kycDetailFromContract.citizenshipBackHash;
+        const citizenshipBackHash = kycDetailFromContract.backHash;
 
         fetch(
           `https://${THIRD_WORLD_CLIENT_ID}.ipfscdn.io/ipfs/${citizenshipBackHash}/citizenshipBackHash`

@@ -37,6 +37,24 @@ export const theme = createTheme({
         textSizeLarge: {
           padding: "12px 16px",
         },
+        contained: {
+          "&:hover": {
+            backgroundColor: "#3832A0",
+            color: "#FFFFFF",
+          },
+        },
+        text: {
+          "&:hover": {
+            backgroundColor: "transparent",
+            color: "#5048E5",
+          },
+        },
+        outlined: {
+          "&:hover": {
+            backgroundColor: "rgba(0, 0, 0, 0.08)",
+            color: "#5048E5",
+          },
+        },
       },
     },
     MuiButtonBase: {

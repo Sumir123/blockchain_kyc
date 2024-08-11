@@ -5,224 +5,175 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { TransactionContext } from "../../context/TransactionContext";
 import PersonIcon from "@mui/icons-material/Person";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+
 function LandingPage() {
   const { connectWallet, currentAccount } = useContext(TransactionContext);
 
   return (
     <div>
-      <nav className="bg-bg-3 sticky-top py-4 ">
-        <div className="d-block d-lg-none">
-          <div className="container">
-            <div className="row align-items-center">
-              <div className="col-3 ">
-                <a
-                  href="#"
-                  className="btn btn-width-equal-height d-lg-none rounded-circle custom-mobile-nav-btn"
-                  data-bs-toggle="offcanvas"
-                  data-bs-target="#custom-id-rxc4oo09"
-                >
-                  <svg
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="fill-light-1"
-                  >
-                    <path d="M2.00016 5.33333H14.0002C14.177 5.33333 14.3465 5.2631 14.4716 5.13807C14.5966 5.01305 14.6668 4.84348 14.6668 4.66667C14.6668 4.48986 14.5966 4.32029 14.4716 4.19526C14.3465 4.07024 14.177 4 14.0002 4H2.00016C1.82335 4 1.65378 4.07024 1.52876 4.19526C1.40373 4.32029 1.3335 4.48986 1.3335 4.66667C1.3335 4.84348 1.40373 5.01305 1.52876 5.13807C1.65378 5.2631 1.82335 5.33333 2.00016 5.33333ZM14.0002 10.6667H2.00016C1.82335 10.6667 1.65378 10.7369 1.52876 10.8619C1.40373 10.987 1.3335 11.1565 1.3335 11.3333C1.3335 11.5101 1.40373 11.6797 1.52876 11.8047C1.65378 11.9298 1.82335 12 2.00016 12H14.0002C14.177 12 14.3465 11.9298 14.4716 11.8047C14.5966 11.6797 14.6668 11.5101 14.6668 11.3333C14.6668 11.1565 14.5966 10.987 14.4716 10.8619C14.3465 10.7369 14.177 10.6667 14.0002 10.6667ZM14.0002 7.33333H2.00016C1.82335 7.33333 1.65378 7.40357 1.52876 7.5286C1.40373 7.65362 1.3335 7.82319 1.3335 8C1.3335 8.17681 1.40373 8.34638 1.52876 8.4714C1.65378 8.59643 1.82335 8.66667 2.00016 8.66667H14.0002C14.177 8.66667 14.3465 8.59643 14.4716 8.4714C14.5966 8.34638 14.6668 8.17681 14.6668 8C14.6668 7.82319 14.5966 7.65362 14.4716 7.5286C14.3465 7.40357 14.177 7.33333 14.0002 7.33333Z"></path>
-                  </svg>
-                </a>
-              </div>
-              <div className="col-6 text-center ">
-                <a href="#">
-                  <img
-                    src="i/logo-dark.png"
-                    srcset="i/logo-dark@2x.png 2x"
-                    alt=""
-                    className="img-fluid  w-50 "
-                  />
-                </a>
-              </div>
-              <div className="col-3 "></div>
-            </div>
-          </div>
-        </div>
-        {/* mobile */}
-        <div
-          className="offcanvas offcanvas-start bg-bg-3"
-          id="custom-id-rxc4oo09"
-          aria-hidden="true"
-        >
-          <div className="offcanvas-header">
-            <a href="#">
+      <nav className="navbar navbar-light bg-primary">
+        <div className="container">
+          <a
+            href="#"
+            className="navbar-toggler d-lg-none"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#mobileMenu"
+          >
+            <svg
+              height={16}
+              width={16}
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+              className="text-dark"
+            >
+              <path d="M2 5.333H14C14.177 5.333 14.346 5.263 14.472 5.138C14.597 5.013 14.667 4.843 14.667 4.667C14.667 4.49 14.597 4.32 14.472 4.195C14.346 4.07 14.177 4 14 4H2C1.823 4 1.654 4.07 1.529 4.195C1.404 4.32 1.333 4.49 1.333 4.667C1.333 4.843 1.404 5.013 1.529 5.138C1.654 5.263 1.823 5.333 2 5.333ZM14 10.667H2C1.823 10.667 1.654 10.737 1.529 10.862C1.404 10.987 1.333 11.157 1.333 11.333C1.333 11.51 1.404 11.68 1.529 11.805C1.654 11.93 1.823 12 2 12H14C14.177 12 14.346 11.93 14.472 11.805C14.597 11.68 14.667 11.51 14.667 11.333C14.667 11.157 14.597 10.987 14.472 10.862C14.346 10.737 14.177 10.667 14 10.667ZM14 7.333H2C1.823 7.333 1.654 7.404 1.529 7.529C1.404 7.654 1.333 7.823 1.333 8C1.333 8.177 1.404 8.346 1.529 8.471C1.654 8.596 1.823 8.667 2 8.667H14C14.177 8.667 14.346 8.596 14.472 8.471C14.597 8.346 14.667 8.177 14.667 8C14.667 7.823 14.597 7.654 14.472 7.529C14.346 7.404 14.177 7.333 14 7.333Z"></path>
+            </svg>
+          </a>
+          <a href="#" className="navbar-brand mx-auto d-lg-none">
+            <img
+              src="/images/logo.png"
+              alt="Logo"
+              className="img-fluid"
+              style={{ maxWidth: "100px", height: "auto" }}
+            />
+          </a>
+          <div className="d-none d-lg-flex justify-content-between align-items-center w-100">
+            <a href="#" className="navbar-brand">
               <img
-                src="i/logo-dark.png"
-                srcset="i/logo-dark@2x.png 2x"
-                alt=""
+                src="/images/logo.png"
+                alt="KYC"
                 className="img-fluid"
+                style={{ maxWidth: "100px", height: "auto" }}
               />
             </a>
-            <a
-              href="#"
-              className="btn btn-sm btn-width-equal-height btn-light-1"
-              data-bs-dismiss="offcanvas"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="fill-dark-2"
-              >
-                <path d="M8.9398 8L13.1398 3.80667C13.2653 3.68113 13.3359 3.51087 13.3359 3.33333C13.3359 3.1558 13.2653 2.98554 13.1398 2.86C13.0143 2.73447 12.844 2.66394 12.6665 2.66394C12.4889 2.66394 12.3187 2.73447 12.1931 2.86L7.9998 7.06L3.80646 2.86C3.68093 2.73447 3.51066 2.66394 3.33313 2.66394C3.1556 2.66394 2.98533 2.73447 2.8598 2.86C2.73426 2.98554 2.66374 3.1558 2.66374 3.33333C2.66374 3.51087 2.73426 3.68113 2.8598 3.80667L7.0598 8L2.8598 12.1933C2.79731 12.2553 2.74771 12.329 2.71387 12.4103C2.68002 12.4915 2.6626 12.5787 2.6626 12.6667C2.6626 12.7547 2.68002 12.8418 2.71387 12.9231C2.74771 13.0043 2.79731 13.078 2.8598 13.14C2.92177 13.2025 2.99551 13.2521 3.07675 13.2859C3.15798 13.3198 3.24512 13.3372 3.33313 13.3372C3.42114 13.3372 3.50827 13.3198 3.58951 13.2859C3.67075 13.2521 3.74449 13.2025 3.80646 13.14L7.9998 8.94L12.1931 13.14C12.2551 13.2025 12.3288 13.2521 12.4101 13.2859C12.4913 13.3198 12.5785 13.3372 12.6665 13.3372C12.7545 13.3372 12.8416 13.3198 12.9228 13.2859C13.0041 13.2521 13.0778 13.2025 13.1398 13.14C13.2023 13.078 13.2519 13.0043 13.2857 12.9231C13.3196 12.8418 13.337 12.7547 13.337 12.6667C13.337 12.5787 13.3196 12.4915 13.2857 12.4103C13.2519 12.329 13.2023 12.2553 13.1398 12.1933L8.9398 8Z"></path>
-              </svg>
-            </a>
-          </div>
-          <div className="offcanvas-body">
-            <div>
-              <a href="#" className="fw-bold text-dark-1 py-2 d-inline-block">
+            <div className="d-flex align-items-center">
+              <a href="#" className="nav-link fw-bold mx-4 text-dark">
                 Home
               </a>
-            </div>
-            <div>
-              <a href="#" className="fw-bold text-dark-1 py-2 d-inline-block">
+              <a href="#feature" className="nav-link fw-bold mx-4 text-dark">
                 Features
               </a>
-            </div>
-            {/* <div>
-              <a href="#" className="fw-bold text-dark-1 py-2 d-inline-block">
-                Blog
-              </a>
-            </div>
-            <div>
-              <a href="#" className="fw-bold text-dark-1 py-2 d-inline-block">
-                Prices
-              </a>
-            </div> */}
-          </div>
-        </div>
-        <div id="home" className="d-none d-lg-block">
-          <div className="container ">
-            <div className="row align-items-center justify-content-between">
-              <div className="col-2">
-                <a href="#">
-                  <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHIj9gikRbtW3d_7pAvZb6CXJg2El6adAyfojbb210Akx2G7BaUrxqG5M_WAHRo40U1jc&usqp=CAU"
-                    alt="KYC"
-                    className="img-fluid w-50"
-                  />
-                </a>
-              </div>
-              <div className="text-center fs-2 d-flex justify-content-center col-2">
-                <a href="#" className="fw-bold mx-4 text-dark-1 ">
-                  Home
-                </a>
-                <a href="#feature" className="fw-bold mx-4 text-dark-1 ">
-                  Features
-                </a>
-              </div>
-              <div className="d-flex fs-2 align-items-center justify-content-end col-8">
-                <div className="fw-bold fs-4 me-8 ">
-                  {currentAccount ? (
-                    "Get Started"
-                  ) : (
-                    <Button
-                      onClick={connectWallet}
-                      size="large"
-                      variant="contained"
-                      class="btn fs-2 btn-action-1 "
-                    >
-                      Connect Wallet
-                    </Button>
-                  )}
-                </div>
-              </div>
+              {currentAccount ? (
+                <Button
+                  // onClick={connectWallet}
+                  size="large"
+                  variant="contained"
+                  className="btn btn-primary"
+                >
+                  Get Started
+                </Button>
+              ) : (
+                <Button
+                  onClick={connectWallet}
+                  size="large"
+                  variant="contained"
+                  className="btn btn-primary"
+                >
+                  Connect Wallet
+                </Button>
+              )}
             </div>
           </div>
         </div>
       </nav>
 
+      <div
+        className="offcanvas offcanvas-start bg-light"
+        id="mobileMenu"
+        aria-hidden="true"
+      >
+        <div className="offcanvas-header text-right">
+          <button
+            type="button"
+            className="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div className="offcanvas-body">
+          <a href="#" className="d-block py-2 text-dark">
+            Home
+          </a>
+          <a href="#" className="d-block py-2 text-dark">
+            Features
+          </a>
+        </div>
+      </div>
+
       {currentAccount ? (
-        <section className="py-10 py-lg-20 bg-bg-3 text-center">
+        <section className="py-10 py-lg-20 bg-light text-center">
           <div className="container">
             <div className="row justify-content-center">
-              <div className="col-md-10 col-lg-9 col-xl-8 col-xxl-7">
+              <div className="col-md-10 col-lg-9 col-xl-8">
                 <p className="mb-5 fs-4">Get Started</p>
                 <h2 className="display-5 mb-6">Choose Appropriate Service</h2>
-                <p className="fs-1 remove-br-sm mb-0"></p>
               </div>
             </div>
             <div className="row justify-content-center">
-              <div className="mt-15 col-sm-4 col-lg-3 col-xl-2">
-                <PersonIcon fontSize="large"></PersonIcon>
-
-                <h5 className="my-6">I am Customer</h5>
+              <div className="col-sm-4 col-lg-3 mb-4">
+                <PersonIcon fontSize="large" />
+                <h5 className="my-4">I am Customer</h5>
                 <Button
                   component={Link}
                   to="/user"
                   size="large"
                   variant="outlined"
-                  class="btn btn-action-1 "
+                  className="btn btn-outline-primary"
                 >
-                  Signin{" "}
+                  Sign in
                 </Button>
               </div>
-              <div className="d-none d-xl-block col-xl-1"></div>
-              <div className="mt-15 col-sm-4 col-lg-3 col-xl-2">
-                <AccountBalanceIcon fontSize="large"></AccountBalanceIcon>
-
-                <h5 className="my-6">I am Bank</h5>
+              <div className="col-sm-4 col-lg-3 mb-4">
+                <AccountBalanceIcon fontSize="large" />
+                <h5 className="my-4">I am Bank</h5>
                 <Button
                   component={Link}
                   to="/bank"
                   size="large"
                   variant="outlined"
-                  class="btn btn-action-1 "
+                  className="btn btn-outline-primary"
                 >
-                  Signin{" "}
+                  Sign in
                 </Button>
               </div>
-              <div className="d-none d-xl-block col-xl-1"></div>
-              <div className="mt-15 col-sm-4 col-lg-3 col-xl-2">
-                <SupervisorAccountIcon fontSize="large"></SupervisorAccountIcon>
-                <h5 className="my-6">I am Admin</h5>
+              <div className="col-sm-4 col-lg-3 mb-4">
+                <SupervisorAccountIcon fontSize="large" />
+                <h5 className="my-4">I am Admin</h5>
                 <Button
                   component={Link}
                   to="/admin"
                   size="large"
                   variant="outlined"
-                  class="btn btn-action-1 "
+                  className="btn btn-outline-primary"
                 >
-                  Signin
+                  Sign in
                 </Button>
               </div>
             </div>
           </div>
         </section>
       ) : (
-        <header className="py-20 bg-bg-3">
+        <header className="pt-5 pb-20 bg-light">
           <div className="container">
             <div className="row align-items-center flex-md-row-reverse">
-              <div className="col-md-2">
+              <div className="col-md-6 mb-4">
                 <img
-                  src="https://signzy.com/blog/wp-content/uploads/2020/06/image-0-3.png"
-                  srcset="
-              pub/171668/3749e40b7e77138384cf21c3b18ceee5/uploads/image-0-3.png 2x
-            "
-                  alt=""
-                  className="w-100 "
+                  src="/images/blockchain.jpg"
+                  alt="Blockchain"
+                  className="img-fluid w-100 "
                 />
               </div>
-              <div className="col-md-8 mt-8 mt-md-0 d-flex flex-column d-flex justify-content-md-center align-items-center align-content-center">
-                <h1 className="display-3  ">Blockchain Based KYC</h1>
-                <p className="mb-8 ml5 fs-1 ">
-                  Enhancing Security and Efficiency in Identity Verification
-                  Processes
+              <div className="col-md-6 d-flex flex-column justify-content-center">
+                <h1 className="display-4 mb-4">Blockchain Based KYC</h1>
+                <p className="mb-4 fs-4">
+                  Enhancing Security and Efficiency in
+                  <br /> Identity Verification Processes
                 </p>
                 <Button
                   onClick={connectWallet}
                   size="large"
                   variant="contained"
-                  class="btn btn-action-1  "
+                  className="btn btn-primary align-self-start mt-7"
                 >
                   Connect Wallet
                 </Button>
@@ -231,27 +182,28 @@ function LandingPage() {
           </div>
         </header>
       )}
-
-      <section class="py-10 py-lg-20 text-center bg-bg-3">
-        <div id="feature" class="container">
-          <div class="row justify-content-center">
-            <div class="col-md-9 col-lg-7 col-xl-6 col-xxl-5">
-              <h2 class="fw-bold display-5 mb-6 ">Why Decentralized-KYC</h2>
-              <p class="fs-2 mb-15 ">
-                An all-in-one solution to verify your identity, streamline a KYC
-                on-boarding process
+      <section className="py-10 py-lg-20 text-center bg-light">
+        <div id="feature" className="container">
+          <div className="row justify-content-center">
+            <div className="col-md-9 col-lg-8 col-xl-6">
+              <h2 className="display-5 mb-6">Features</h2>
+              <p className="fs-4">
+                Our platform offers a wide range of features to enhance your
+                experience.
               </p>
             </div>
           </div>
-          <div class="row">
-            <div class="col-lg-4 ">
+        </div>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-4 mb-4 mb-lg-0">
               <svg
                 width="60"
                 height="60"
                 viewBox="0 0 61 60"
-                fill="none"
+                fill="#5048E5"
                 xmlns="http://www.w3.org/2000/svg"
-                class="fill-action-1 d-block mx-auto"
+                className="d-block mx-auto"
               >
                 <path
                   fill-rule="evenodd"
@@ -259,19 +211,19 @@ function LandingPage() {
                   d="M42.692 0.254703C43.059 0.467472 43.343 0.798416 43.4976 1.19347C43.6523 1.58852 43.6683 2.02433 43.5432 2.4297L36.7895 24.3747H49.2507C49.617 24.3746 49.9752 24.4817 50.2812 24.6828C50.5873 24.8839 50.8277 25.1702 50.9729 25.5064C51.118 25.8426 51.1616 26.214 51.0981 26.5746C51.0347 26.9353 50.867 27.2695 50.6157 27.536L20.6157 59.411C20.3255 59.7196 19.9392 59.9209 19.5199 59.9819C19.1006 60.0429 18.673 59.9601 18.3068 59.747C17.9405 59.5339 17.6573 59.203 17.5032 58.8083C17.3491 58.4136 17.3333 57.9783 17.4582 57.5735L24.212 35.6247H11.7507C11.3845 35.6248 11.0263 35.5178 10.7203 35.3166C10.4142 35.1155 10.1738 34.8292 10.0286 34.493C9.88345 34.1568 9.83991 33.7854 9.90337 33.4248C9.96684 33.0641 10.1345 32.7299 10.3857 32.4635L40.3857 0.588453C40.6757 0.2802 41.0613 0.0790857 41.4801 0.0178105C41.8988 -0.0434648 42.3259 0.0387029 42.692 0.250953V0.254703ZM16.0895 31.8747H26.7507C27.0442 31.8746 27.3335 31.9435 27.5955 32.0756C27.8575 32.2077 28.0848 32.3995 28.2592 32.6355C28.4335 32.8716 28.5501 33.1452 28.5994 33.4344C28.6488 33.7237 28.6295 34.0205 28.5432 34.301L23.4132 50.9622L44.9082 28.1247H34.2507C33.9573 28.1248 33.668 28.0559 33.406 27.9238C33.144 27.7917 32.9167 27.5999 32.7423 27.3639C32.5679 27.1279 32.4514 26.8542 32.4021 26.565C32.3527 26.2757 32.372 25.9789 32.4582 25.6985L37.5882 9.0372L16.0895 31.8747Z"
                 ></path>
               </svg>
-              <h5 class="mb-4 mt-6">Fill Once and Forget</h5>
-              <p class="mb-0">
+              <h5 className="mb-4 mt-6">Fill Once and Forget</h5>
+              <p className="mb-0">
                 Just fill form once while onboarding into our service
               </p>
             </div>
-            <div class="col-lg-4 mt-8 mb-8 mt-lg-0 mb-lg-0 ">
+            <div className="col-lg-4 mb-4 mb-lg-0">
               <svg
                 width="61"
                 height="60"
                 viewBox="0 0 61 60"
-                fill="none"
+                fill="#5048E5"
                 xmlns="http://www.w3.org/2000/svg"
-                class="fill-action-1 d-block mx-auto"
+                class=" d-block mx-auto"
               >
                 <path
                   fill-rule="evenodd"
@@ -284,19 +236,19 @@ function LandingPage() {
                   d="M29.6184 5.84695C29.8896 5.7025 30.1923 5.62695 30.4996 5.62695C30.807 5.62695 31.1096 5.7025 31.3809 5.84695L59.5059 20.847C59.8054 21.007 60.0558 21.2454 60.2304 21.5366C60.405 21.8279 60.4973 22.1611 60.4973 22.5007C60.4973 22.8403 60.405 23.1735 60.2304 23.4648C60.0558 23.756 59.8054 23.9944 59.5059 24.1545L31.3809 39.1545C31.1096 39.2989 30.807 39.3745 30.4996 39.3745C30.1923 39.3745 29.8896 39.2989 29.6184 39.1545L1.49336 24.1545C1.19384 23.9944 0.943403 23.756 0.768792 23.4648C0.594182 23.1735 0.501953 22.8403 0.501953 22.5007C0.501953 22.1611 0.594182 21.8279 0.768792 21.5366C0.943403 21.2454 1.19384 21.007 1.49336 20.847L29.6184 5.84695ZM6.36086 22.5007L30.4996 35.3745L54.6421 22.5007L30.4996 9.62695L6.35711 22.5007H6.36086Z"
                 ></path>
               </svg>
-              <h5 class="mb-4 mt-6">Get Verified</h5>
-              <p class="mb-0">
-                Our team will help you to get verified by financial instutions
+              <h5 className="mb-4 mt-6">Access Your Data Anytime</h5>
+              <p className="mb-0">
+                Easily access your data whenever you need it without any hassle
               </p>
             </div>
-            <div class="col-lg-4 ">
+            <div className="col-lg-4 mb-4 mb-lg-0">
               <svg
                 width="60"
                 height="60"
                 viewBox="0 0 60 60"
-                fill="none"
+                fill="#5048E5"
                 xmlns="http://www.w3.org/2000/svg"
-                class="fill-action-1 d-block mx-auto"
+                class="d-block mx-auto"
               >
                 <path d="M21.5625 50.625C22.1887 49.3762 22.5 47.5013 22.5 45H37.5C37.5 47.5013 37.8113 49.3762 38.4375 50.625H41.25C41.7473 50.625 42.2242 50.8225 42.5758 51.1742C42.9275 51.5258 43.125 52.0027 43.125 52.5C43.125 52.9973 42.9275 53.4742 42.5758 53.8258C42.2242 54.1775 41.7473 54.375 41.25 54.375H18.75C18.2527 54.375 17.7758 54.1775 17.4242 53.8258C17.0725 53.4742 16.875 52.9973 16.875 52.5C16.875 52.0027 17.0725 51.5258 17.4242 51.1742C17.7758 50.8225 18.2527 50.625 18.75 50.625H21.5625Z"></path>
                 <path
@@ -305,72 +257,10 @@ function LandingPage() {
                   d="M52.4663 11.25H7.5C6.28125 11.25 5.6175 11.5425 5.2425 11.7937C4.83058 12.0805 4.50195 12.4713 4.29 12.9262C3.97035 13.5867 3.78671 14.3047 3.75 15.0375V37.5C3.75 38.7188 4.0425 39.3825 4.29375 39.7575C4.55625 40.1513 4.93125 40.4625 5.42625 40.71C6.05826 41.0161 6.74314 41.1982 7.44375 41.2463L7.5375 41.25H52.5C53.7188 41.25 54.3825 40.9575 54.7575 40.7062C55.1694 40.4195 55.4981 40.0287 55.71 39.5738C56.0161 38.9417 56.1982 38.2569 56.2463 37.5563L56.25 37.4625V15C56.25 13.7812 55.9575 13.1175 55.7062 12.7425C55.4196 12.3305 55.0288 12.0018 54.5738 11.79C53.9133 11.4703 53.1953 11.2867 52.4625 11.25H52.4663ZM52.5 7.5H7.5C0 7.5 0 15 0 15V37.5C0 45 7.5 45 7.5 45H52.5C60 45 60 37.5 60 37.5V15C60 7.5 52.5 7.5 52.5 7.5Z"
                 ></path>
               </svg>
-              <h5 class="mb-4 mt-6">Your Business Your Data</h5>
-              <p class="mb-0">
-                Our decentralized and encryption algorithms will keep you data
-                safe and under your control
+              <h5 className="mb-4 mt-6">24/7 Support</h5>
+              <p className="mb-0">
+                Our team is here to support you around the clock.
               </p>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="py-10 py-lg-20 bg-bg-3 text-center text-md-start">
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-md-9 col-lg-9 col-xl-9 col-xxl-9">
-              <h2 class="display-5 mb-6 w-70 ">
-                With Decentralized-KYC you and your business will remain
-                compliant to GDPR, KYC laws globally.
-              </h2>
-              <p class="fs-2 remove-br-sm mb-0 "></p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-10 py-lg-20 text-center bg-bg-3">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-md-9 col-lg-7 col-xl-6 col-xxl-5">
-              <h2 className="display-5 mb-6 ">Our Partner Banks</h2>
-              <p className="mb-15 fs-2 "></p>
-            </div>
-          </div>
-
-          <div className="row justify-content-center mb-lg-12">
-            <div className="col-lg-3 col-md-5 col-sm-6 ">
-              <img
-                src="https://siteadmin.nabilbank.com/assets/backend/uploads/nabil-logo.png"
-                alt="nabil-logo"
-                className="img-fluid rounded-circle mb-6"
-              />
-              <h5 className="mb-2"></h5>
-              <p className="mb-12"></p>
-            </div>
-            <div className="col-lg-3 col-md-5 col-sm-6 ">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/d/de/Mega_Bank_Logo.png"
-                alt="megalogo"
-                className="img-fluid rounded-circle mb-6"
-              />
-              <h5 className="mb-2"></h5>
-              <p className="mb-12"></p>
-            </div>
-            <div className="col-lg-3 col-md-5 col-sm-6 ">
-              <img
-                src="https://logodownload.org/wp-content/uploads/2019/12/standard-chartered-logo-3.png"
-                alt="standardchartered"
-                className="img-fluid rounded-circle mb-6"
-              />
-              <h5 className="mb-2"></h5>
-              <p className="mb-12"></p>
-            </div>
-            <div className="col-lg-3 col-md-5 col-sm-6 ">
-              <img
-                src="https://reliablelife.com.np/wp-content/uploads/2019/01/global-ime-bank-1.jpg"
-                alt="global ime bank"
-                className="img-fluid rounded-circle mb-6"
-              />
             </div>
           </div>
         </div>
