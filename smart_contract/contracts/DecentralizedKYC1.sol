@@ -6,6 +6,7 @@ contract DecentralizedKYC1 {
     //admin for bank verification
     address public admin;
     bytes32 public root;
+
     //status of user's kyc
     enum KYC_STATUS {
         NOT_UPLOADED,
@@ -24,7 +25,7 @@ contract DecentralizedKYC1 {
         uint256 privateKey;
         uint256 publicKey;
         uint256 encryptKey;
-        bytes32 sha256Hash;
+        bytes32 merkleRoot;
         address verifiedBy;
     }
 
@@ -108,7 +109,6 @@ contract DecentralizedKYC1 {
             users[msg.sender].isRegistered == true,
             "User Address not registered"
         );
-
         _;
     }
 
@@ -117,7 +117,6 @@ contract DecentralizedKYC1 {
             banks[msg.sender].isRegistered == true,
             "Bank Address not registered"
         );
-
         _;
     }
 
@@ -168,35 +167,19 @@ contract DecentralizedKYC1 {
 
     //validators to check if correct wallet is connected
     function isAdmin() public view returns (bool) {
-        if (admin == msg.sender) {
-            return true;
-        } else {
-            return false;
-        }
+        return admin == msg.sender;
     }
 
     function isUserValid() public view returns (bool) {
-        if (users[msg.sender].isRegistered == true) {
-            return true;
-        } else {
-            return false;
-        }
+        return users[msg.sender].isRegistered;
     }
 
     function isBankValid() public view returns (bool) {
-        if (banks[msg.sender].isRegistered == true) {
-            return true;
-        } else {
-            return false;
-        }
+        return banks[msg.sender].isRegistered;
     }
 
     function isBankVerified() public view returns (bool) {
-        if (banks[msg.sender].isVerified == true) {
-            return true;
-        } else {
-            return false;
-        }
+        return banks[msg.sender].isVerified;
     }
 
     //address list of all banks returned
@@ -215,11 +198,8 @@ contract DecentralizedKYC1 {
 
     //called by admin to verify a registered bank
     function verifyBank(address _bank) public onlyAdmin {
-        require(
-            banks[_bank].isRegistered == true,
-            "Bank Address not registered"
-        );
-        require(banks[_bank].isVerified == false, "Bank already verified");
+        require(banks[_bank].isRegistered, "Bank Address not registered");
+        require(!banks[_bank].isVerified, "Bank already verified");
         banks[_bank].isVerified = true;
         verifiedBankList.push(_bank);
     }
@@ -228,7 +208,7 @@ contract DecentralizedKYC1 {
     function getUserDetails(
         address user
     ) public view onlyRegisteredBank returns (User memory) {
-        require(isBankValid() == true);
+        require(isBankValid(), "Invalid Bank");
         return users[user];
     }
 
@@ -239,11 +219,29 @@ contract DecentralizedKYC1 {
 
     //called by admin to get details of a particular bank
     function getBankDetails(address _bank) public view returns (Bank memory) {
-        require(
-            banks[_bank].isRegistered == true,
-            "Bank Address not registered"
-        );
+        require(banks[_bank].isRegistered, "Bank Address not registered");
         return banks[_bank];
+    }
+
+    // Helper function to convert uint256 to string
+    function uintToString(uint256 value) internal pure returns (string memory) {
+        if (value == 0) {
+            return "0";
+        }
+        uint256 tempValue = value;
+        uint256 digits;
+        while (tempValue != 0) {
+            digits++;
+            tempValue /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        uint256 index = digits - 1;
+        tempValue = value;
+        while (tempValue != 0) {
+            buffer[index--] = bytes1(uint8(48 + (tempValue % 10)));
+            tempValue /= 10;
+        }
+        return string(buffer);
     }
 
     //called by user to upload the kyc hashes and cryptography keys
@@ -254,14 +252,31 @@ contract DecentralizedKYC1 {
         string memory _backHash,
         uint256 _privateKey,
         uint256 _publicKey,
-        uint256 _encryptKey,
-        bytes32 _sha256Hash
+        uint256 _encryptKey
     ) public onlyRegisteredUser {
         require(
-            (users[msg.sender].kycStatus == KYC_STATUS.NOT_UPLOADED) ||
-                (users[msg.sender].kycStatus == KYC_STATUS.REJECTED),
+            users[msg.sender].kycStatus == KYC_STATUS.NOT_UPLOADED ||
+                users[msg.sender].kycStatus == KYC_STATUS.REJECTED,
             "KYC already uploaded"
         );
+
+        // Convert uint256 to string
+        string memory privateKeyStr = uintToString(_privateKey);
+        string memory publicKeyStr = uintToString(_publicKey);
+        string memory encryptKeyStr = uintToString(_encryptKey);
+
+        // Prepare the array of hashes
+        string[] memory hashes = new string[](7);
+        hashes[0] = _jsonHash;
+        hashes[1] = _photoHash;
+        hashes[2] = _frontHash;
+        hashes[3] = _backHash;
+        hashes[4] = privateKeyStr;
+        hashes[5] = publicKeyStr;
+        hashes[6] = encryptKeyStr;
+
+        // Compute Merkle root for KYC data
+        bytes32 merkleRoot = computeMerkleRoot(hashes);
 
         Kyc memory newKyc = Kyc(
             _jsonHash,
@@ -271,7 +286,7 @@ contract DecentralizedKYC1 {
             _privateKey,
             _publicKey,
             _encryptKey,
-            _sha256Hash,
+            merkleRoot,
             address(0)
         );
 
@@ -282,6 +297,37 @@ contract DecentralizedKYC1 {
         users[msg.sender].kycStatus = KYC_STATUS.UPLOADED;
     }
 
+    // Helper function to compute Merkle Root
+    function computeMerkleRoot(
+        string[] memory leaves
+    ) public pure returns (bytes32) {
+        require(leaves.length > 0, "Leaves cannot be empty");
+
+        bytes32[] memory hashes = new bytes32[](leaves.length);
+        for (uint i = 0; i < leaves.length; i++) {
+            hashes[i] = keccak256(abi.encodePacked(leaves[i]));
+        }
+
+        while (hashes.length > 1) {
+            uint newLength = (hashes.length + 1) / 2;
+            bytes32[] memory newHashes = new bytes32[](newLength);
+
+            for (uint i = 0; i < newLength; i++) {
+                if (i * 2 + 1 < hashes.length) {
+                    newHashes[i] = keccak256(
+                        abi.encodePacked(hashes[i * 2], hashes[i * 2 + 1])
+                    );
+                } else {
+                    newHashes[i] = hashes[i * 2];
+                }
+            }
+
+            hashes = newHashes;
+        }
+
+        return hashes[0];
+    }
+
     /*---------functions for KYC verification requests (client to bank)----------*/
 
     //called by user to request a particular bank for verification purpose
@@ -290,7 +336,7 @@ contract DecentralizedKYC1 {
             users[msg.sender].kycStatus == KYC_STATUS.UPLOADED,
             "KYC status should be uploaded"
         );
-        require(banks[_bank].isVerified == true, "Bank not verified");
+        require(banks[_bank].isVerified, "Bank not verified");
         address[] storage requestedUsers = verificationRequestBy[_bank];
         requestedUsers.push(msg.sender);
         users[msg.sender].kycStatus = KYC_STATUS.REQUESTED;
@@ -304,7 +350,7 @@ contract DecentralizedKYC1 {
         onlyRegisteredBank
         returns (address[] memory)
     {
-        require(isBankVerified() == true, "Bank not verified");
+        require(isBankVerified(), "Bank not verified");
         return verificationRequestBy[msg.sender];
     }
 
@@ -389,12 +435,27 @@ contract DecentralizedKYC1 {
     function getUserKYC(
         address _userAddress
     ) public view onlyRegisteredBank returns (Kyc memory) {
-        require(banks[msg.sender].isVerified == true, "Bank not verified");
+        require(banks[msg.sender].isVerified, "Bank not verified");
         require(
             users[_userAddress].kycStatus != KYC_STATUS.NOT_UPLOADED,
             "KYC not Uploaded"
         );
-        return kyc[_userAddress];
+        Kyc memory userKyc = kyc[_userAddress];
+
+        // Validate Merkle Root
+        string[] memory kycData = new string[](7);
+        kycData[0] = userKyc.jsonHash;
+        kycData[1] = userKyc.photoHash;
+        kycData[2] = userKyc.frontHash;
+        kycData[3] = userKyc.backHash;
+        kycData[4] = uintToString(userKyc.privateKey);
+        kycData[5] = uintToString(userKyc.publicKey);
+        kycData[6] = uintToString(userKyc.encryptKey);
+
+        bytes32 computedRoot = computeMerkleRoot(kycData);
+        require(userKyc.merkleRoot == computedRoot, "Merkle root mismatch");
+
+        return userKyc;
     }
 
     //get user's own kyc
@@ -414,15 +475,15 @@ contract DecentralizedKYC1 {
             users[_userAddress].kycStatus == KYC_STATUS.REQUESTED,
             "KYC must be requested first"
         );
-        require(banks[msg.sender].isVerified == true, "Bank not verified");
+        require(banks[msg.sender].isVerified, "Bank not verified");
         users[_userAddress].kycStatus = KYC_STATUS.VERIFIED;
         allBankClients[msg.sender].push(_userAddress);
         userAllBanks[_userAddress].push(msg.sender);
         kyc[_userAddress].verifiedBy = msg.sender;
-        return "KYC has been Succesfully verified ";
+        return "KYC has been successfully verified";
     }
 
-    //bank can reject verification is details aren't good enough
+    //bank can reject verification if details aren't good enough
     function rejectUserKYC(
         address _userAddress
     ) public onlyRegisteredBank returns (string memory) {
@@ -430,8 +491,8 @@ contract DecentralizedKYC1 {
             users[_userAddress].kycStatus == KYC_STATUS.REQUESTED,
             "KYC must be requested first"
         );
-        require(banks[msg.sender].isVerified == true, "Bank not verified");
+        require(banks[msg.sender].isVerified, "Bank not verified");
         users[_userAddress].kycStatus = KYC_STATUS.REJECTED;
-        return "KYC has been rejected ";
+        return "KYC has been rejected";
     }
 }
