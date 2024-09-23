@@ -18,7 +18,7 @@ const getPrimeNumbers = (a, b) => {
 const getRandomPrimes = (a, b) => {
   const primes = getPrimeNumbers(a, b);
   const rand = getRandomNumber(0, primes.length - 1);
-  return [primes[rand], primes[primes.length - rand]];
+  return [primes[rand], primes[(rand + 1) % primes.length]];
 };
 
 export default getRandomPrimes;
